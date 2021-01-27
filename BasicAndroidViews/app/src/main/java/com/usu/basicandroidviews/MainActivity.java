@@ -30,16 +30,20 @@ public class MainActivity extends AppCompatActivity {
         AppCompatButton displayMessageButton = new AppCompatButton(this);
         displayMessageButton.setText("Display Message");
 
+        AppCompatTextView messageTextView = new AppCompatTextView(this);
+
         displayMessageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                String usersName = nameEditText.getText().toString();
+                messageTextView.setText("Hi " + usersName + ", welcome to our application!");
             }
         });
 
         mainLayout.addView(instructionsTextView);
         mainLayout.addView(nameEditText);
         mainLayout.addView(displayMessageButton);
+        mainLayout.addView(messageTextView);
         setContentView(mainLayout);
     }
 }
