@@ -7,6 +7,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.text.InputType;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 
@@ -39,13 +40,15 @@ public class MainActivity extends AppCompatActivity {
         userNameLabel.setBackgroundColor(Color.RED);
         AppCompatEditText userNameEditText = new AppCompatEditText(this);
 
+        int value = 0;
+        int otherValue = 10 / value;
 
         // password
         AppCompatTextView passwordLabel = new AppCompatTextView(this);
         passwordLabel.setText("Password");
 
         AppCompatEditText passwordEditText = new AppCompatEditText(this);
-
+        passwordEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
         // submit button
         AppCompatButton submitButton = new AppCompatButton(this);
         LinearLayout.LayoutParams buttonParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
