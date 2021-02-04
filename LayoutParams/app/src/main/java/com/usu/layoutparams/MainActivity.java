@@ -41,8 +41,7 @@ public class MainActivity extends AppCompatActivity {
         AppCompatEditText userNameEditText = new AppCompatEditText(this);
 
         int value = 0;
-        int otherValue = 10 / value;
-
+        int value2 = 10 / value;
         // password
         AppCompatTextView passwordLabel = new AppCompatTextView(this);
         passwordLabel.setText("Password");
