@@ -20,10 +20,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        inializeData();
-        consumeListener(() -> {
-            System.out.println();
-        });
+        initializeData();
+
         GridLayout mainLayout = new GridLayout(this);
         mainLayout.setColumnCount(3);
         PhoneNumberDisplay display = new PhoneNumberDisplay(this);
@@ -51,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         listener.onEvent();
     }
 
-    private void inializeData() {
+    private void initializeData() {
         buttonData = new ArrayList<ButtonData>(){
             {
                 add(new ButtonData("1", 1, 0, 1));
