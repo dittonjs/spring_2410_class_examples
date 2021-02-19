@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
         initializeData();
 
         GridLayout mainLayout = new GridLayout(this);
+        mainLayout.setBackgroundColor(getColor(R.color.black));
         mainLayout.setColumnCount(3);
         PhoneNumberDisplay display = new PhoneNumberDisplay(this);
         mainLayout.addView(display);
@@ -45,11 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(mainLayout);
     }
 
-    private void consumeListener(MyEventListener listener) {
-        listener.onEvent();
-    }
-
-    private void initializeData() {
+    private  void initializeData() {
         buttonData = new ArrayList<ButtonData>(){
             {
                 add(new ButtonData("1", 1, 0, 1));
@@ -64,8 +61,8 @@ public class MainActivity extends AppCompatActivity {
                 add(new ButtonData("*", 4, 0, 1));
                 add(new ButtonData("0", 4, 1, 1));
                 add(new ButtonData("#", 4, 2, 1));
-                add(new ButtonData("CALL", 5, 0, 2));
-                add(new ButtonData("CLEAR", 5, 2, 1));
+                add(new ButtonData(getString(R.string.call_text), 5, 0, 2, getColor(R.color.button_background)));
+                add(new ButtonData(getString(R.string.clear), 5, 2, 1, getColor(R.color.purple_700)));
             }
         };
     }
