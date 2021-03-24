@@ -25,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
             buttonsLayout.addView(button);
         }
 
-        mainLayout.addView(buttonsLayout);
+//        mainLayout.addView(buttonsLayout);
         mainLayout.addView(drawingView);
 
         setContentView(mainLayout);

@@ -1,7 +1,9 @@
 package com.usu.mspaint;
 
+import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.view.MotionEvent;
 import android.view.View;
@@ -9,9 +11,9 @@ import android.view.View;
 import java.util.ArrayList;
 
 public class DrawingView extends View {
-    private ArrayList<Shape> shapes = new ArrayList<>();
-    private Shape currentShape = null;
     private Paint paint = new Paint();
+    private int color = 0;
+    private int x = 100;
 
     public enum ShapeType {
         CIRCLE,
@@ -24,53 +26,37 @@ public class DrawingView extends View {
 
     public DrawingView(Context context) {
         super(context);
-        setOnTouchListener((view, motionEvent) -> {
-            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
-                Point start = new Point();
-                Shape newShape = null;
-                start.x = motionEvent.getX();
-                start.y = motionEvent.getY();
-                switch (type) {
-                    case LINE: {
-                        Point end = new Point();
-                        end.x = motionEvent.getX();
-                        end.y = motionEvent.getY();
-                        newShape = new Line(start, end);
-                        break;
-                    }
-                    case RECT:
-                        Point end = new Point();
-                        end.x = motionEvent.getX();
-                        end.y = motionEvent.getY();
-                        newShape = new Rectangle(start, end);
-                        break;
-                    case CIRCLE:
-                        newShape = new Circle(1, start);
-                        break;
-                    case SNOWMAN:
-                        newShape = new Snowman(10, start);
-                        break;
-                    default:
-                        break;
-                }
 
-                shapes.add(newShape);
-                currentShape = newShape;
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
+        super.onLayout(changed, left, top, right, bottom);
+        ValueAnimator animator = ValueAnimator.ofInt(0,  255);
+        animator.setDuration(2000);
+        animator.setRepeatCount(ValueAnimator.INFINITE);
+        animator.setRepeatMode(ValueAnimator.REVERSE);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                color = (int)valueAnimator.getAnimatedValue();
                 invalidate();
-                return true;
             }
-
-            if (motionEvent.getAction() == MotionEvent.ACTION_MOVE) {
-                Point end = new Point();
-                end.x = motionEvent.getX();
-                end.y = motionEvent.getY();
-                currentShape.resize(end);
-                invalidate();
-                return true;
-            }
-
-            return false;
         });
+        animator.start();
+
+        ValueAnimator animator2 = ValueAnimator.ofInt(100,  getWidth() - 100);
+        animator2.setDuration(2000);
+        animator2.setRepeatCount(ValueAnimator.INFINITE);
+        animator2.setRepeatMode(ValueAnimator.REVERSE);
+        animator2.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator valueAnimator) {
+                x = (int)valueAnimator.getAnimatedValue();
+                invalidate();
+            }
+        });
+        animator2.start();
     }
 
     public void setType(ShapeType type) {
@@ -79,9 +65,8 @@ public class DrawingView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
-        shapes.forEach(shape -> {
-            shape.draw(canvas, paint);
-            paint.reset();
-        });
+        paint.setColor(Color.rgb(145, 152, color));
+        canvas.drawCircle(x, getHeight() / 2, x, paint);
+
     }
 }

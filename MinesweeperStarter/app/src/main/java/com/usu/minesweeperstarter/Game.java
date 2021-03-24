@@ -53,7 +53,7 @@ public class Game {
     }
 
 
-    private int countNeighbors(int row, int col, int[][] gameState) {
+    private int countNeighbors(int row, int col, Cell[][] cells) {
         // TODO: Count how many mines surround the cell at (row, col);
         return 0;
     }
