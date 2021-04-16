@@ -2,6 +2,7 @@ package com.usu.josephditton.journal.viewmodels;
 
 import android.app.Application;
 
+import androidx.databinding.ObservableArrayList;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.ViewModel;
@@ -15,20 +16,28 @@ import com.usu.josephditton.journal.models.JournalEntry;
 import java.util.ArrayList;
 
 public class JournalEntriesViewModel extends AndroidViewModel {
-    ArrayList<JournalEntry> entries = new ArrayList<>();
+    ObservableArrayList<JournalEntry> entries = new ObservableArrayList<>();
     MutableLiveData<Boolean> saving = new MutableLiveData<>();
     AppDatabase db;
     public JournalEntriesViewModel(Application app) {
         super(app);
         saving.setValue(false);
         db = Room.databaseBuilder(app, AppDatabase.class, "journal-database").build();
+        new Thread(() -> {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            entries.addAll(db.getJournalEntryDao().getAll());
+        }).start();
     }
 
     public MutableLiveData<Boolean> getSaving() {
         return saving;
     }
 
-    public ArrayList<JournalEntry> getEntries() {
+    public ObservableArrayList<JournalEntry> getEntries() {
         return entries;
     }
 

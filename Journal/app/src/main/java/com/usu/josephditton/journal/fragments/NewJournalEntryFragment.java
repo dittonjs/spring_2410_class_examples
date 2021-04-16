@@ -14,7 +14,10 @@ import android.view.ViewGroup;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 import com.usu.josephditton.journal.R;
+import com.usu.josephditton.journal.models.JournalEntry;
 import com.usu.josephditton.journal.viewmodels.JournalEntriesViewModel;
+
+import java.util.ArrayList;
 
 public class NewJournalEntryFragment extends Fragment {
     public NewJournalEntryFragment() {
@@ -26,10 +29,14 @@ public class NewJournalEntryFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(getActivity()).get(JournalEntriesViewModel.class);
+
+
         viewModel.getSaving().observe(getViewLifecycleOwner(), saving -> {
             if (this.saving && !saving) {
                 // go back be done
-                getActivity().getSupportFragmentManager().popBackStack();
+                getActivity().runOnUiThread(() -> {
+                    getActivity().getSupportFragmentManager().popBackStack();
+                });
             } else if(!this.saving && saving) {
                 MaterialButton button = view.findViewById(R.id.save_button);
                 button.setEnabled(false);
