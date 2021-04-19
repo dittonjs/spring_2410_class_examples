@@ -9,13 +9,18 @@ import androidx.annotation.NonNull;
 import androidx.databinding.ObservableArrayList;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.button.MaterialButton;
 import com.usu.josephditton.journal.models.JournalEntry;
 
 public class JournalEntriesAdapter extends RecyclerView.Adapter<JournalEntriesAdapter.ViewHolder> {
     ObservableArrayList<JournalEntry> entries;
-
-    public JournalEntriesAdapter(ObservableArrayList<JournalEntry> entries) {
+    OnJournalEntryClicked listener;
+    public interface OnJournalEntryClicked {
+        public void onClick(JournalEntry entry);
+    }
+    public JournalEntriesAdapter(ObservableArrayList<JournalEntry> entries, OnJournalEntryClicked listener) {
         this.entries = entries;
+        this.listener = listener;
     }
 
 
@@ -31,8 +36,10 @@ public class JournalEntriesAdapter extends RecyclerView.Adapter<JournalEntriesAd
         JournalEntry entry = entries.get(position);
         TextView title = holder.itemView.findViewById(R.id.entry_title);
         TextView date = holder.itemView.findViewById(R.id.entry_date);
-        holder.itemView.findViewById(R.id.read_button).setOnClickListener((view) -> {
-            getActivity.getSu
+        MaterialButton readButton = holder.itemView.findViewById(R.id.read_button);
+        readButton.setOnClickListener(view -> {
+            if (listener == null) return;
+            listener.onClick(entry);
         });
         title.setText(entry.title);
         date.setText(entry.entryDate + "");

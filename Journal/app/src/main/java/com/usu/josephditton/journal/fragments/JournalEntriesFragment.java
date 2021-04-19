@@ -1,6 +1,7 @@
 package com.usu.josephditton.journal.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -29,7 +30,17 @@ public class JournalEntriesFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         viewModel = new ViewModelProvider(getActivity()).get(JournalEntriesViewModel.class);
 
-        JournalEntriesAdapter adapter = new JournalEntriesAdapter(viewModel.getEntries());
+        JournalEntriesAdapter adapter = new JournalEntriesAdapter(
+                viewModel.getEntries(),
+                (entry) -> {
+                    Log.d("Journal Entry", entry.id + "");
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container_view, NewJournalEntryFragment.class, null)
+                            .setReorderingAllowed(true)
+                            .addToBackStack(null)
+                            .commit();
+                }
+        );
         viewModel.getEntries().addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<JournalEntry>>() {
             @Override
             public void onChanged(ObservableList<JournalEntry> sender) {
