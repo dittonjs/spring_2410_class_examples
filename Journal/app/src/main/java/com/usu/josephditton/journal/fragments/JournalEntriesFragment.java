@@ -17,8 +17,6 @@ import com.usu.josephditton.journal.R;
 import com.usu.josephditton.journal.models.JournalEntry;
 import com.usu.josephditton.journal.viewmodels.JournalEntriesViewModel;
 
-import java.util.ArrayList;
-
 public class JournalEntriesFragment extends Fragment {
     public JournalEntriesFragment() {
         super(R.layout.fragment_journal_entries);
@@ -34,11 +32,15 @@ public class JournalEntriesFragment extends Fragment {
                 viewModel.getEntries(),
                 (entry) -> {
                     Log.d("Journal Entry", entry.id + "");
+                    viewModel.setCurrentEntry(entry);
                     getActivity().getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_container_view, NewJournalEntryFragment.class, null)
+                            .replace(R.id.fragment_container_view, CreateOrUpdateJournalEntryFragment.class, null)
                             .setReorderingAllowed(true)
                             .addToBackStack(null)
                             .commit();
+                },
+                entry -> {
+                    viewModel.deleteEntry(entry);
                 }
         );
         viewModel.getEntries().addOnListChangedCallback(new ObservableList.OnListChangedCallback<ObservableList<JournalEntry>>() {
@@ -65,16 +67,16 @@ public class JournalEntriesFragment extends Fragment {
 
             @Override
             public void onItemRangeMoved(ObservableList<JournalEntry> sender, int fromPosition, int toPosition, int itemCount) {
-//                getActivity().runOnUiThread(() -> {
-//                    adapter.notifyDataSetChanged();
-//                });
+                getActivity().runOnUiThread(() -> {
+                    adapter.notifyItemMoved(fromPosition, toPosition);
+                });
             }
 
             @Override
             public void onItemRangeRemoved(ObservableList<JournalEntry> sender, int positionStart, int itemCount) {
-//                getActivity().runOnUiThread(() -> {
-//                    adapter.notifyDataSetChanged();
-//                });
+                getActivity().runOnUiThread(() -> {
+                    adapter.notifyItemRangeRemoved(positionStart, itemCount);
+                });
             }
         });
         RecyclerView recyclerView = view.findViewById(R.id.journal_entries);
@@ -82,8 +84,9 @@ public class JournalEntriesFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
 
         view.findViewById(R.id.fab).setOnClickListener((button) -> {
+            viewModel.setCurrentEntry(null);
             getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container_view, NewJournalEntryFragment.class, null)
+                    .replace(R.id.fragment_container_view, CreateOrUpdateJournalEntryFragment.class, null)
                     .setReorderingAllowed(true)
                     .addToBackStack(null)
                     .commit();

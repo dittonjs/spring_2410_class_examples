@@ -18,6 +18,7 @@ import java.util.ArrayList;
 public class JournalEntriesViewModel extends AndroidViewModel {
     ObservableArrayList<JournalEntry> entries = new ObservableArrayList<>();
     MutableLiveData<Boolean> saving = new MutableLiveData<>();
+    MutableLiveData<JournalEntry> currentEntry = new MutableLiveData<>();
     AppDatabase db;
     public JournalEntriesViewModel(Application app) {
         super(app);
@@ -33,6 +34,14 @@ public class JournalEntriesViewModel extends AndroidViewModel {
         }).start();
     }
 
+    public void setCurrentEntry(JournalEntry entry) {
+        currentEntry.postValue(entry);
+    }
+
+    public MutableLiveData<JournalEntry> getCurrentEntry() {
+        return currentEntry;
+    }
+
     public MutableLiveData<Boolean> getSaving() {
         return saving;
     }
@@ -44,13 +53,30 @@ public class JournalEntriesViewModel extends AndroidViewModel {
     public void saveJournalEntry(String title, String body) {
         saving.setValue(true);
         new Thread(() -> {
-            JournalEntry newEntry = new JournalEntry();
-            newEntry.title = title;
-            newEntry.body = body;
-            newEntry.entryDate = System.currentTimeMillis();
-            newEntry.id = db.getJournalEntryDao().insert(newEntry);
-            entries.add(newEntry);
+            if (currentEntry.getValue() != null) {
+                JournalEntry current = currentEntry.getValue();
+                current.title = title;
+                current.body = body;
+                db.getJournalEntryDao().update(current);
+                int index = entries.indexOf(current);
+                entries.set(index, current);
+            } else {
+                JournalEntry newEntry = new JournalEntry();
+                newEntry.title = title;
+                newEntry.body = body;
+                newEntry.entryDate = System.currentTimeMillis();
+                newEntry.id = db.getJournalEntryDao().insert(newEntry);
+                entries.add(newEntry);
+            }
+
             saving.postValue(false);
+        }).start();
+    }
+
+    public void deleteEntry(JournalEntry entry) {
+        new Thread(() -> {
+            db.getJournalEntryDao().delete(entry);
+            entries.remove(entry);
         }).start();
     }
 }

@@ -15,12 +15,14 @@ import com.usu.josephditton.journal.models.JournalEntry;
 public class JournalEntriesAdapter extends RecyclerView.Adapter<JournalEntriesAdapter.ViewHolder> {
     ObservableArrayList<JournalEntry> entries;
     OnJournalEntryClicked listener;
+    OnJournalEntryClicked deleteListener;
     public interface OnJournalEntryClicked {
         public void onClick(JournalEntry entry);
     }
-    public JournalEntriesAdapter(ObservableArrayList<JournalEntry> entries, OnJournalEntryClicked listener) {
+    public JournalEntriesAdapter(ObservableArrayList<JournalEntry> entries, OnJournalEntryClicked listener, OnJournalEntryClicked deleteListener) {
         this.entries = entries;
         this.listener = listener;
+        this.deleteListener = deleteListener;
     }
 
 
@@ -40,6 +42,10 @@ public class JournalEntriesAdapter extends RecyclerView.Adapter<JournalEntriesAd
         readButton.setOnClickListener(view -> {
             if (listener == null) return;
             listener.onClick(entry);
+        });
+        holder.itemView.findViewById(R.id.delete_button).setOnClickListener(view -> {
+            if (deleteListener == null) return;
+            deleteListener.onClick(entry);
         });
         title.setText(entry.title);
         date.setText(entry.entryDate + "");
